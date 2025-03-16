@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:naate/component/s_app_bar.dart';
 import 'package:naate/providers/lyrics_provider.dart';
 import 'package:naate/screen/offline_poem.dart';
 import 'package:naate/screen/poem.dart';
@@ -15,15 +16,7 @@ class HomeCom extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        title: const Text(
-          "সকল সংগীত",
-          style: TextStyle(
-              fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.blue[700],
-        elevation: 0,
-      ),
+      appBar: SAppBar(title: "All Nasheed"),
       body: Consumer<LyricsProvider>(
         builder: (context, lyricsP, child) {
           if (lyricsP.isLoading) {
@@ -118,7 +111,7 @@ class HomeCom extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "No lyrics available at the moment.",
+                    "No Nasheed available at the moment.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16,

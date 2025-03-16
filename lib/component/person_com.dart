@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:naate/constant.dart';
 import 'package:naate/model/lyricist_model.dart';
 import 'package:naate/providers/lyricist_provider.dart';
 import 'package:naate/screen/by_lyricist.dart';
 import 'package:naate/screen/profile.dart';
 import 'package:naate/screen/search_by_lyricist.dart';
 import 'package:provider/provider.dart';
+
+import 's_app_bar.dart';
 
 class PersonCom extends StatelessWidget {
   const PersonCom({super.key});
@@ -15,23 +18,17 @@ class PersonCom extends StatelessWidget {
     Provider.of<LyricistPorvider>(context, listen: false).fetchData();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Lyricist List',
-          style: TextStyle(fontSize: 16, color: Colors.white,fontWeight: FontWeight.bold),
-        ),
-         backgroundColor: Colors.blue[700],
-        elevation: 0,
-      ),
+      appBar: SAppBar(title: "All Shayer "),
       body: Consumer<LyricistPorvider>(
         builder: (context, lyricistP, child) {
+          print("${lyricistP.lyricist} lyricistP.lyricist ");
           if (lyricistP.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
           if (lyricistP.lyricist.isEmpty) {
             return const Center(
               child: Text(
-                "No Lyricists found",
+                "No Shayer found",
                 style: TextStyle(fontSize: 18, color: Colors.grey),
               ),
             );
@@ -39,7 +36,8 @@ class PersonCom extends StatelessWidget {
 
           return RefreshIndicator(
             onRefresh: () async {
-              await Provider.of<LyricistPorvider>(context, listen: false).fetchData();
+              await Provider.of<LyricistPorvider>(context, listen: false)
+                  .fetchData();
             },
             child: ListView.builder(
               padding: const EdgeInsets.all(16),
@@ -61,16 +59,16 @@ class PersonCom extends StatelessWidget {
                   },
                   child: Card(
                     color: Colors.white,
-                      elevation: 1,
-                      shadowColor: Colors.grey,
-                      surfaceTintColor:Colors.white,
+                    elevation: 1,
+                    shadowColor: Colors.grey,
+                    surfaceTintColor: Colors.white,
                     margin: const EdgeInsets.symmetric(vertical: 8),
-                  
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 12),
                       child: Row(
                         children: [
                           // Profile Image with Gesture to View Profile
@@ -78,16 +76,17 @@ class PersonCom extends StatelessWidget {
                             onTap: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const Profile()),
+                                MaterialPageRoute(
+                                    builder: (context) => Profile(
+                                          lyricistId: lyricistData.id,
+                                        )),
                               );
                             },
                             child: CircleAvatar(
                               radius: 35,
                               backgroundColor: Colors.grey[200],
                               backgroundImage: NetworkImage(
-                                lyricistData.profileImage ??
-                                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGosU4BkeFyuPsve9um8iznwC4dHt7V6TzcQ&s',
-                              ),
+                                  "$imgUrl/${lyricistData.profile}"),
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -109,7 +108,7 @@ class PersonCom extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 6),
                                 Text(
-                                  'Total Songs: ${lyricistData.nateRasulsCount}',
+                                  'Total Nasheed: ${lyricistData.nateRasulsCount}',
                                   style: const TextStyle(
                                     fontSize: 14,
                                     color: Colors.grey,
@@ -121,7 +120,8 @@ class PersonCom extends StatelessWidget {
 
                           // Arrow Icon
                           IconButton(
-                            icon: const Icon(Icons.arrow_forward_ios, color: Colors.blue),
+                            icon: const Icon(Icons.arrow_forward_ios,
+                                color: Colors.blue),
                             onPressed: () {
                               Navigator.push(
                                 context,

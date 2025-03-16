@@ -4,6 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:naate/component/toast.dart';
 import 'package:naate/constant.dart';
+import 'package:naate/db/database_helper.dart';
+import 'package:naate/screen/home.dart';
+import 'package:naate/screen/signup_screen.dart';
+
+import '../component/m_app_bar.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,18 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final formKey = GlobalKey<FormState>();
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-        backgroundColor: Colors.blue[800],
-        // title: const Text(
-        //   "The Nasheed",
-        //   style: TextStyle(color: Colors.white),
-        // ),
-        centerTitle: true,
-      ),
+      appBar: MAppBar(title: ""),
       body: SingleChildScrollView(
         child: Form(
           key: formKey,
@@ -105,15 +99,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         print(response.statusCode);
                         if (response.statusCode == 200) {
                           // If the server returns an OK response, then parse the JSON.
+                          Map<String, dynamic> userData =
+                              jsonDecode(response.body);
+                          print(userData);
+                          DatabaseHelper dbHelper = DatabaseHelper();
+                          // await dbHelper.dropDatabase();
+                          await dbHelper.savedUserFromApi(
+                              userData['user'], userData['token']);
                           Toast.success("Login successful");
+                          Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder: (context) => Home()));
                           print(response.body);
+                        } else if (response.statusCode == 401) {
+                          Toast.error("Invalid credentials");
                         } else {
-                          // If that response was not OK, throw an error.
-                          throw Exception('Failed to load post');
+                          Toast.error("Something Went wrong");
                         }
-                        // Perform login
-                        // loginController["email"].text;
-                        // loginController["password"].text;
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -133,7 +134,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Text("Don't have an account?"),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignUpScreen()),
+                          );
+                        },
                         child: Text("Sign Up"),
                       ),
                     ],

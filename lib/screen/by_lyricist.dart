@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:naate/component/m_app_bar.dart';
 import 'package:naate/providers/lyrics_provider.dart';
 import 'package:naate/screen/poem.dart';
 import 'package:provider/provider.dart';
@@ -13,21 +14,11 @@ class ByLyricist extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Fetch lyrics by lyricist when the widget is built
-    Provider.of<LyricsProvider>(context, listen: false).fetchLyricsByLyricist(lyricistId);
+    Provider.of<LyricsProvider>(context, listen: false)
+        .fetchLyricsByLyricist(lyricistId);
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue[800],
-        elevation: 2,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          name ?? "Lyricist",
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white),
-        ),
-      ),
+      appBar: MAppBar(title: name ?? ""),
       body: Consumer<LyricsProvider>(
         builder: (context, lyricsP, child) {
           if (lyricsP.isLoading) {
@@ -53,16 +44,18 @@ class ByLyricist extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Poem(lyricsId: data.id)),
+                    MaterialPageRoute(
+                        builder: (context) => Poem(lyricsId: data.id)),
                   );
                 },
                 child: Card(
-                color: Colors.white,
-                elevation: 1,
-                shadowColor: Colors.grey,
-                surfaceTintColor:Colors.white,
+                  color: Colors.white,
+                  elevation: 1,
+                  shadowColor: Colors.grey,
+                  surfaceTintColor: Colors.white,
                   margin: const EdgeInsets.only(bottom: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16)),
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
@@ -84,7 +77,8 @@ class ByLyricist extends StatelessWidget {
                         // Lyrics snippet
                         HtmlWidget(
                           data.lyrics ?? "",
-                          textStyle: const TextStyle(fontSize: 14, color: Colors.black87),
+                          textStyle: const TextStyle(
+                              fontSize: 14, color: Colors.black87),
                         ),
 
                         const SizedBox(height: 8),

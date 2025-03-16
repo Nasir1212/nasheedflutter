@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
+import 'package:naate/component/m_app_bar.dart';
 import 'package:naate/component/toast.dart';
 import 'package:naate/constant.dart';
 
@@ -31,14 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final formKey = GlobalKey<FormState>();
 
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-        backgroundColor: Colors.blue[800],
-        centerTitle: true,
-      ),
+      appBar: MAppBar(title: ""),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(16.0),
@@ -183,7 +176,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     children: [
                       Text("Already have an account?"),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginScreen()),
+                          );
+                        },
                         child: Text("Login"),
                       ),
                     ],

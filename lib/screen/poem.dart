@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:naate/component/m_app_bar.dart';
 import 'package:naate/component/share_btn_sheet.dart';
+import 'package:naate/component/toast.dart';
 import 'package:naate/providers/offline_provider.dart';
 import 'package:naate/providers/video_link_provider.dart';
 import 'package:provider/provider.dart';
@@ -22,27 +24,18 @@ class Poem extends StatelessWidget {
     Provider.of<OfflineProvider>(context, listen: false).notDownload(lyricsId);
     Provider.of<VideoLinkProvider>(context, listen: false)
         .fetchVideoLink(lyricsId);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       // Call your state change logic here (setState, notifyListeners)
-      Provider.of<ActionProvider>(context, listen: false).setLove(lyricsId);
+      DatabaseHelper dbHelper = DatabaseHelper();
+      final userData = await dbHelper.getUser();
+      if (userData != null) {
+        Provider.of<ActionProvider>(context, listen: false)
+            .setLove(lyricsId, userData['user_id'] ?? 0);
+      }
     });
 
-    // ActionProvider actionP =
-    //     Provider.of<ActionProvider>(context, listen: false);
-    // actionP.setLove();
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-        backgroundColor: Colors.blue[800],
-        title: const Text(
-          "The Nasheed",
-          style: TextStyle(color: Colors.white),
-        ),
-        centerTitle: true,
-      ),
+      appBar: MAppBar(title: "The Nasheed"),
       body: Consumer3<LyricsProvider, ActionProvider, VideoLinkProvider>(
         builder: (context, lyricsProvider, actionP, linkP, child) {
           if (lyricsProvider.isLoading) {
@@ -113,7 +106,7 @@ class Poem extends StatelessWidget {
                     const Divider(),
                     BottomNavigationBar(
                       currentIndex: 0,
-                      onTap: (index) {
+                      onTap: (index) async {
                         if (index == 2) {
                           Provider.of<ActionProvider>(context, listen: false)
                               .handleVideo();
@@ -127,7 +120,16 @@ class Poem extends StatelessWidget {
                         } else if (index == 1) {
                           showShareModal(context, lyricsId, data.title ?? "");
                         } else if (index == 0) {
-                          actionP.handleLove(data.id as int);
+                          DatabaseHelper dbHelper = DatabaseHelper();
+                          final userData = await dbHelper.getUser();
+                          bool? isLogged = await dbHelper.isLogged();
+                          if (isLogged == true && userData != null) {
+                            actionP.handleLove(
+                                data.id ?? 0, userData['user_id'] ?? 0);
+                            Toast.success('❤️ Thanks for your support.');
+                          } else {
+                            Toast.error('Please ! Login');
+                          }
                         }
                       },
                       elevation: 0,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:naate/component/m_app_bar.dart';
 import 'package:naate/providers/lyrics_provider.dart';
 import 'package:naate/screen/poem.dart';
 import 'package:provider/provider.dart';
@@ -12,14 +13,7 @@ class SearchByLyrics extends StatelessWidget {
     final TextEditingController textCon = TextEditingController();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Search Your Favorite Lyrics",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.blue[800],
-        elevation: 2,
-      ),
+      appBar: MAppBar(title: "Search your favorite Nasheed"),
       body: Column(
         children: [
           // Search Bar
@@ -40,11 +34,12 @@ class SearchByLyrics extends StatelessWidget {
                     child: TextField(
                       controller: textCon,
                       decoration: const InputDecoration(
-                        hintText: "Search for lyrics...",
+                        hintText: "Search for Nasheed ...",
                         border: InputBorder.none,
                       ),
                       onChanged: (value) {
-                        Provider.of<LyricsProvider>(context, listen: false).fetchBySearch(value);
+                        Provider.of<LyricsProvider>(context, listen: false)
+                            .fetchBySearch(value);
                       },
                     ),
                   ),
@@ -53,7 +48,8 @@ class SearchByLyrics extends StatelessWidget {
                       icon: const Icon(Icons.close, color: Colors.grey),
                       onPressed: () {
                         textCon.clear();
-                        Provider.of<LyricsProvider>(context, listen: false).fetchBySearch("");
+                        Provider.of<LyricsProvider>(context, listen: false)
+                            .fetchBySearch("");
                       },
                     ),
                 ],
@@ -72,7 +68,7 @@ class SearchByLyrics extends StatelessWidget {
                 if (lyricsProvider.searchLyric.isEmpty) {
                   return const Center(
                     child: Text(
-                      "No lyrics found",
+                      "No Nasheed found",
                       style: TextStyle(fontSize: 16, color: Colors.grey),
                     ),
                   );
@@ -83,27 +79,35 @@ class SearchByLyrics extends StatelessWidget {
                   itemCount: lyricsProvider.searchLyric.length,
                   itemBuilder: (context, index) {
                     final data = lyricsProvider.searchLyric[index];
-                    final highlightValue = _highlightAndLimitText(data.lyrics, lyricsProvider.searchValue);
+                    final highlightValue = _highlightAndLimitText(
+                        data.lyrics, lyricsProvider.searchValue);
 
                     return Card(
                       margin: const EdgeInsets.only(bottom: 12),
                       color: Colors.white,
                       elevation: 1,
                       shadowColor: Colors.grey,
-                      surfaceTintColor:Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      surfaceTintColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                       child: ListTile(
                         contentPadding: const EdgeInsets.all(12),
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => Poem(lyricsId: data.id)));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      Poem(lyricsId: data.id)));
                         },
                         title: Text(
                           data.title,
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         subtitle: HtmlWidget(
                           highlightValue,
-                          textStyle: const TextStyle(fontSize: 14, color: Colors.black),
+                          textStyle: const TextStyle(
+                              fontSize: 14, color: Colors.black),
                         ),
                       ),
                     );
@@ -132,13 +136,15 @@ class SearchByLyrics extends StatelessWidget {
 
     // Get a snippet of text surrounding the match
     final snippetStart = match.start - 100 > 0 ? match.start - 100 : 0;
-    final snippetEnd = match.start + 100 < text.length ? match.start + 100 : text.length;
+    final snippetEnd =
+        match.start + 100 < text.length ? match.start + 100 : text.length;
     String snippet = text.substring(snippetStart, snippetEnd);
 
     // Highlight the matched word
     snippet = snippet.replaceAllMapped(
       regex,
-      (match) => "<mark style='background-color:yellow;'>${match.group(0)}</mark>",
+      (match) =>
+          "<mark style='background-color:yellow;'>${match.group(0)}</mark>",
     );
 
     return snippet;

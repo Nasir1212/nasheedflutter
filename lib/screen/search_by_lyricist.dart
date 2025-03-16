@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:naate/component/m_app_bar.dart';
 import 'package:naate/providers/lyricist_provider.dart';
 import 'package:naate/screen/by_lyricist.dart';
 import 'package:naate/screen/profile.dart';
 import 'package:provider/provider.dart';
+
+import '../constant.dart';
 
 class SearchByLyricist extends StatelessWidget {
   const SearchByLyricist({super.key});
@@ -12,11 +15,7 @@ class SearchByLyricist extends StatelessWidget {
     final TextEditingController textCon = TextEditingController();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("পছন্দের লেখককে খুঁজুন",style: TextStyle(color: Colors.white,fontSize: 16),),
-        backgroundColor: Colors.blue[800],
-        elevation: 2,
-      ),
+      appBar: MAppBar(title: "Search your favorite Shayer"),
       body: Column(
         children: [
           // Search Bar
@@ -40,14 +39,17 @@ class SearchByLyricist extends StatelessWidget {
                           icon: const Icon(Icons.close, color: Colors.grey),
                           onPressed: () {
                             textCon.clear();
-                            Provider.of<LyricistPorvider>(context, listen: false).fetchBySearch("");
+                            Provider.of<LyricistPorvider>(context,
+                                    listen: false)
+                                .fetchBySearch("");
                           },
                         ),
-                        hintText: "Type lyricist's name...",
+                        hintText: "Type Shayer's name...",
                         border: InputBorder.none,
                       ),
                       onChanged: (value) {
-                        Provider.of<LyricistPorvider>(context, listen: false).fetchBySearch(value);
+                        Provider.of<LyricistPorvider>(context, listen: false)
+                            .fetchBySearch(value);
                       },
                     ),
                   ),
@@ -67,7 +69,7 @@ class SearchByLyricist extends StatelessWidget {
                 if (lyricistProvider.searchLyricist.isEmpty) {
                   return const Center(
                     child: Text(
-                      "No lyricists found",
+                      "No Shayer  found",
                       style: TextStyle(fontSize: 16, color: Colors.grey),
                     ),
                   );
@@ -84,35 +86,44 @@ class SearchByLyricist extends StatelessWidget {
                       color: Colors.white,
                       elevation: 1,
                       shadowColor: Colors.grey,
-                      surfaceTintColor:Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      surfaceTintColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                       child: ListTile(
                         leading: GestureDetector(
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const Profile()));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Profile(
+                                          lyricistId: lyricist.id,
+                                        )));
                           },
-                          child: const CircleAvatar(
+                          child: CircleAvatar(
                             radius: 30,
-                            backgroundImage: NetworkImage(
-                              "https://a.storyblok.com/f/191576/1200x800/a3640fdc4c/profile_picture_maker_before.webp",
-                            ),
+                            backgroundImage:
+                                NetworkImage("$imgUrl/${lyricist.profile}"),
                           ),
                         ),
                         title: Text(
                           lyricist.name,
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         subtitle: Text(
-                          "Total Songs: ${lyricist.nateRasulsCount}",
+                          "Total Nasheed: ${lyricist.nateRasulsCount}",
                           style: const TextStyle(color: Colors.grey),
                         ),
                         trailing: IconButton(
-                          icon: const Icon(Icons.arrow_forward_ios, color: Colors.blue),
+                          icon: const Icon(Icons.arrow_forward_ios,
+                              color: Colors.blue),
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ByLyricist(lyricistId: lyricist.id, name: lyricist.name),
+                                builder: (context) => ByLyricist(
+                                    lyricistId: lyricist.id,
+                                    name: lyricist.name),
                               ),
                             );
                           },
@@ -121,7 +132,8 @@ class SearchByLyricist extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ByLyricist(lyricistId: lyricist.id, name: lyricist.name),
+                              builder: (context) => ByLyricist(
+                                  lyricistId: lyricist.id, name: lyricist.name),
                             ),
                           );
                         },

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:naate/component/m_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:naate/providers/offline_provider.dart';
 import 'package:naate/db/database_helper.dart';
@@ -13,14 +14,7 @@ class OfflinePoem extends StatelessWidget {
     Provider.of<OfflineProvider>(context, listen: false).fetchItem();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Offline Poems"),
-        backgroundColor: Colors.blue[800],
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
+      appBar: MAppBar(title: "Offline Nasheeds"),
       body: Consumer<OfflineProvider>(
         builder: (context, offlineP, child) {
           final data = offlineP.offlineData;
@@ -28,7 +22,7 @@ class OfflinePoem extends StatelessWidget {
           if (data.isEmpty) {
             return const Center(
               child: Text(
-                "No offline poems available",
+                "No offline Nasheed available",
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
             );
@@ -48,7 +42,7 @@ class OfflinePoem extends StatelessWidget {
                 color: Colors.white,
                 elevation: 1,
                 shadowColor: Colors.grey,
-                surfaceTintColor:Colors.white,
+                surfaceTintColor: Colors.white,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -86,8 +80,8 @@ class OfflinePoem extends StatelessWidget {
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () async {
                             final db = DatabaseHelper();
-                            await db.deleteItem(poem.id??0);
-                       
+                            await db.deleteItem(poem.id ?? 0);
+
                             Provider.of<OfflineProvider>(context, listen: false)
                                 .fetchItem(); // Refresh list
                             ScaffoldMessenger.of(context).showSnackBar(
