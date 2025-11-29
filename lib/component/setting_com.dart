@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:naate/db/database_helper.dart';
 import 'package:naate/screen/home.dart';
 import 'package:naate/screen/login_screen.dart';
+import 'package:naate/screen/note_home.dart';
 import 'package:naate/screen/offline_poem.dart';
 import 'package:naate/screen/signup_screen.dart';
 import 'package:http/http.dart' as http;
@@ -42,12 +43,20 @@ class SettingCom extends StatelessWidget {
                           builder: (context) => const OfflinePoem()),
                     );
                   }),
+                  _buildMenuButton(context, Icons.note, 'Note', () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const NoteHome()),
+                    );
+                  }),
                   _buildMenuButton(context, Icons.home, 'Home', () {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => Home()),
                     );
                   }),
+
                   if (!isLoggedIn) ...[
                     _buildMenuButton(context, Icons.login, 'Sign In', () {
                       Navigator.push(
